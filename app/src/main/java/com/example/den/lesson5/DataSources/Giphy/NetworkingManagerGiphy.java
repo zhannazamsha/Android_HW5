@@ -39,7 +39,6 @@ public class NetworkingManagerGiphy implements NetworkingManager {
             public void onResponse(Call call, final Response response) throws IOException {
                 try {
                     String jsonData = response.body().string();
-                    jsonData = jsonData.substring(8,jsonData.length()-1);
                     parseGiphyResponse(jsonData, parser, gson, photoItems);
                 } catch (Exception ex) {
                     Log.e("ERROR",ex.getLocalizedMessage());
@@ -55,7 +54,8 @@ public class NetworkingManagerGiphy implements NetworkingManager {
     }
 
     private void parseGiphyResponse(String response, JsonParser parser, Gson gson, ArrayList<PhotoItem> photoItems) throws JSONException {
-        JSONArray array = new JSONArray(response);
+        JSONObject object = new JSONObject(response);
+        JSONArray array = object.getJSONArray("data");
         for (int i = 0; i < array.length(); i++) {
             JSONObject imgObject = array.getJSONObject(i);
             JsonElement mJson = parser.parse(imgObject.toString());
